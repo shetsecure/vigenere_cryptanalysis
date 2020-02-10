@@ -28,12 +28,16 @@ def calculate_freq_FR():
 # Chiffrement César
 def chiffre_cesar(txt, key):
     """
-    Documentation à écrire
+        @params: txt is a string (all upper_cases)
+                 key is an int
+
+        return : encrypted txt
     """
 
     assert(isinstance(key, int) and key >= 0)
     encrypted = ""
     length = len(txt)
+    txt = txt.upper()
 
     for i in range(length):
         encrypted += alpha[(alpha.index(txt[i]) + key) % 26]
@@ -43,13 +47,17 @@ def chiffre_cesar(txt, key):
 # Déchiffrement César
 def dechiffre_cesar(txt, key):
     """
-    Documentation à écrire
+        @params: txt is a string (all upper_cases)
+                 key is an int
+
+        return : plain txt
     """
 
     assert(isinstance(key, int) and key >= 0)
     
     plain = ""
     length = len(txt)
+    txt = txt.upper()
 
     for i in range(length):
         plain += alpha[(alpha.index(txt[i]) - key) % 26]
@@ -59,16 +67,50 @@ def dechiffre_cesar(txt, key):
 # Chiffrement Vigenere
 def chiffre_vigenere(txt, key):
     """
-    Documentation à écrire
+        @params: txt -> string 
+                 key -> list of ints
     """
-    return txt
+    
+    # assert that the key argument is a list of ints
+    assert(isinstance(key, list) and len(key) > 0)
+    for i in range(len(key)):
+        assert(isinstance(key[i], int) and key[i] >= 0)
+
+    # transform the text to uppercases just to be sure ( assuming it's only alphabetical )
+    txt = txt.upper()
+    txt_length = len(txt)
+
+    crypted = ""
+    len_keys = len(key)
+
+    for i in range(txt_length):
+        crypted += chiffre_cesar(txt[i], key[i % len_keys]) # each char is encrypted with cesar cipher
+
+    return crypted
 
 # Déchiffrement Vigenere
 def dechiffre_vigenere(txt, key):
     """
-    Documentation à écrire
+        @params: txt -> string 
+                 key -> list of ints
     """
-    return txt
+    
+    # assert that the key argument is a list of ints
+    assert(isinstance(key, list) and len(key) > 0)
+    for i in range(len(key)):
+        assert(isinstance(key[i], int) and key[i] >= 0)
+
+    # transform the text to uppercases just to be sure ( assuming it's only alphabetical )
+    txt = txt.upper()
+    txt_length = len(txt)
+
+    plain = ""
+    len_keys = len(key)
+
+    for i in range(txt_length):
+        plain += dechiffre_cesar(txt[i], key[i % len_keys]) # each char is decrypted with cesar cipher
+
+    return plain
 
 # Analyse de fréquences
 def freq(txt):
