@@ -1,31 +1,60 @@
 # Sorbonne Université 3I024 2018-2019
 # TME 2 : Cryptanalyse du chiffre de Vigenere
 #
-# Etudiant.e 1 : NOM ET NUMERO D'ETUDIANT
 # Etudiant.e 2 : NOM ET NUMERO D'ETUDIANT
 
 import sys, getopt, string, math
+from frequence import hist_from_file
 
 # Alphabet français
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 # Fréquence moyenne des lettres en français
 # À modifier
-freq_FR = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+# freq_FR = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+freq_FR = [0.09213437454330574, 0.010354490059155806, 0.030178992381545422, 0.037536932666586184, 0.17174754258773295, 0.010939058717380115, 0.0106150043524949, 0.010717939268399616, 0.07507259453174145, 0.0038327371156619923, 6.989407870073262e-05, 0.06136827190067416, 0.026498751437594118, 0.07030835996721332, 0.04914062053233872, 0.023697905083841123, 0.010160057440224678, 0.06609311162084369, 0.07816826681746844, 0.0737433362349966, 0.06356167517044624, 0.016450524523290613, 1.1437212878301701e-05, 0.004071647784675406, 0.0023001505899695645, 0.0012263233808401269]
+
+alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+
+def calculate_freq_FR():
+    # this is what I used to calculate freq_FR from germinal file
+    freq_FR = []
+    freqs = hist_from_file("germinal.txt")
+    keys = sorted(freqs)
+
+    for key in keys:
+        freq_FR.append(freqs[key])
 
 # Chiffrement César
 def chiffre_cesar(txt, key):
     """
     Documentation à écrire
     """
-    return txt
+
+    assert(isinstance(key, int) and key >= 0)
+    encrypted = ""
+    length = len(txt)
+
+    for i in range(length):
+        encrypted += alpha[(alpha.index(txt[i]) + key) % 26]
+
+    return encrypted
 
 # Déchiffrement César
 def dechiffre_cesar(txt, key):
     """
     Documentation à écrire
     """
-    return txt
+
+    assert(isinstance(key, int) and key >= 0)
+    
+    plain = ""
+    length = len(txt)
+
+    for i in range(length):
+        plain += alpha[(alpha.index(txt[i]) - key) % 26]
+
+    return plain
 
 # Chiffrement Vigenere
 def chiffre_vigenere(txt, key):
@@ -205,4 +234,5 @@ def main(argv):
     print(cryptanalyse(fichier, version))
     
 if __name__ == "__main__":
+    calculate_freq_FR()
     main(sys.argv[1:])
