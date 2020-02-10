@@ -14,8 +14,6 @@ alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 # freq_FR = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 freq_FR = [0.09213437454330574, 0.010354490059155806, 0.030178992381545422, 0.037536932666586184, 0.17174754258773295, 0.010939058717380115, 0.0106150043524949, 0.010717939268399616, 0.07507259453174145, 0.0038327371156619923, 6.989407870073262e-05, 0.06136827190067416, 0.026498751437594118, 0.07030835996721332, 0.04914062053233872, 0.023697905083841123, 0.010160057440224678, 0.06609311162084369, 0.07816826681746844, 0.0737433362349966, 0.06356167517044624, 0.016450524523290613, 1.1437212878301701e-05, 0.004071647784675406, 0.0023001505899695645, 0.0012263233808401269]
 
-alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-
 def calculate_freq_FR():
     # this is what I used to calculate freq_FR from germinal file
     freq_FR = []
@@ -115,31 +113,57 @@ def dechiffre_vigenere(txt, key):
 # Analyse de fréquences
 def freq(txt):
     """
-    Documentation à écrire
+        @params: txt -> a string
+        return the frequency of each letter of the alphabet
     """
-    hist=[0.0]*len(alphabet)
+    txt = txt.upper()
+    hist = []
+
+    for char in alphabet:
+        hist.append(txt.count(char))
+
     return hist
 
 # Renvoie l'indice dans l'alphabet
 # de la lettre la plus fréquente d'un texte
 def lettre_freq_max(txt):
     """
-    Documentation à écrire
+        @params: txt -> a string
+        return the index of the most frequent char in txt
     """
-    return 0
+
+    txt = txt.upper() # transform txt to uppercase in order for this to work
+
+    # for max, key is the value of count, then I need to take the corresponding character by taking the index 0 of the tuple (char, count(char)) -> pass it to index method to get its index
+    return alphabet.index( max( [(char, txt.count(char)) for char in alphabet] , key = lambda x : x[1])[0] )
 
 # indice de coïncidence
 def indice_coincidence(hist):
     """
-    Documentation à écrire
+        @params: hist -> list of frequencies of some text
+        return "indice de coincidence"
     """
-    return 0.0
+    s = 0.0
+    
+    alpha_len = len(alphabet)
+
+    for i in range(alpha_len):
+        s += ( hist[i] * (hist[i] - 1) )
+
+    s /= (alpha_len * (alpha_len - 1))
+    return s
 
 # Recherche la longueur de la clé
 def longueur_clef(cipher):
     """
-    Documentation à écrire
+        on suppose que la clef cherchée est au plus de longueur 20.  On découpe le texte en colonnes (max col width = 20)
+
+        @params: cipher -> a encrypted txt (string)
+
+        returns the length of the key
     """
+    LEN_LIMIT = 20
+    # TODO
     return 0
     
 # Renvoie le tableau des décalages probables étant
