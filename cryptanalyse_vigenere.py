@@ -228,7 +228,44 @@ def cryptanalyse_v1(cipher):
     """
     Documentation à écrire
     """
-    return "TODO"
+    guessed_key_length = longueur_clef(cipher)
+    decalages = clef_par_decalages(cipher, guessed_key_length)
+    columns = []
+    cipher_len = len(cipher)
+
+    for k in range(guessed_key_length):
+        j = k
+        s = ""
+
+        while j < cipher_len:
+            s += cipher[j]
+            j += guessed_key_length
+
+        columns.append(s)
+
+    plain_text = ""
+
+    # assumption -> all the cols have the same length
+
+    for i in range(len(columns[0])): 
+        for j in range(guessed_key_length):
+            try:
+                plain_text += alphabet[ (alphabet.index(columns[j][i]) - decalages[j]) % 26]
+            except IndexError:
+                """first_col = columns[0]
+
+                for i in range(1, len(columns)):
+                    if len(columns[0]) == len(columns[i]):
+                        columns[0] = columns[i]
+                    else:
+                        print("yikes")
+                        print(columns[0])
+                        print(columns[i])
+                        break"""
+                pass
+
+
+    return plain_text
 
 
 ################################################################
@@ -266,7 +303,7 @@ def cryptanalyse_v2(cipher):
 ################################################################
 
 
-### Les fonctions suivantes sont utiles uniquement
+### fonctions suivantes sont utiles uniquement
 ### pour la cryptanalyse V3.
 
 # Prend deux listes de même taille et
@@ -346,5 +383,5 @@ def main(argv):
     print(cryptanalyse(fichier, version))
     
 if __name__ == "__main__":
-    calculate_freq_FR()
     main(sys.argv[1:])
+
