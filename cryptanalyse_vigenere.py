@@ -167,10 +167,10 @@ def longueur_clef(cipher):
 
     strings = []
 
-    if indice_coincidence(freq(cipher)) > 0.06:
+    if indice_coincidence(freq(cipher)) > 0.06: # length(key) = 1
         return 1
 
-    for i in range(2, LEN_LIMIT+1):
+    for i in range(2, LEN_LIMIT+1): # length(key) = i
         for k in range(i):
             j = k
             s = ""
@@ -196,9 +196,31 @@ def longueur_clef(cipher):
 # de chaque colonne
 def clef_par_decalages(cipher, key_length):
     """
-    Documentation à écrire
+        cut the cipher into multiple strings within key_length columns.
+        calculate the shift size of each column between E (the most freq char in french) and most_freq_char in that column
+        return the list of decalage
     """
     decalages=[0]*key_length
+    columns = []
+    cipher_len = len(cipher)
+    e_ord = ord('E')
+
+    for k in range(key_length):
+        j = k
+        s = ""
+
+        while j < cipher_len:
+            s += cipher[j]
+            j += key_length
+
+        columns.append(s)
+
+        # most_freq_char = sorted([(char, s.count(char)) for char in set(s)], key = lambda x : x[1])[-1][0] # [-1] to get most freq tuple (char, count(char)) -> [0] to get the actual char
+        # weird bug if I used the previous line -> maybe sorted function doesn't perform a stable sort
+
+        most_freq_char = alphabet[lettre_freq_max(s)]
+        decalages[k] = (ord(most_freq_char) - e_ord) % 26
+
     return decalages
 
 # Cryptanalyse V1 avec décalages par frequence max
