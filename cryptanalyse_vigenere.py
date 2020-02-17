@@ -38,7 +38,7 @@ def chiffre_cesar(txt, key):
     txt = txt.upper()
 
     for i in range(length):
-        encrypted += alpha[(alpha.index(txt[i]) + key) % 26]
+        encrypted += alphabet[(alphabet.index(txt[i]) + key) % 26]
 
     return encrypted
 
@@ -58,7 +58,7 @@ def dechiffre_cesar(txt, key):
     txt = txt.upper()
 
     for i in range(length):
-        plain += alpha[(alpha.index(txt[i]) - key) % 26]
+        plain += alphabet[(alphabet.index(txt[i]) - key) % 26]
 
     return plain
 
@@ -145,12 +145,12 @@ def indice_coincidence(hist):
     """
     s = 0.0
     
-    alpha_len = len(alphabet)
+    msg_len = sum([x for x in hist if x > 0])
 
-    for i in range(alpha_len):
+    for i in range(len(alphabet)):
         s += ( hist[i] * (hist[i] - 1) )
 
-    s /= (alpha_len * (alpha_len - 1))
+    s /= (msg_len * (msg_len - 1))
     return s
 
 # Recherche la longueur de la clé
@@ -163,7 +163,31 @@ def longueur_clef(cipher):
         returns the length of the key
     """
     LEN_LIMIT = 20
-    # TODO
+    cipher_len = len(cipher)
+
+    strings = []
+
+    if indice_coincidence(freq(cipher)) > 0.06:
+        return 1
+
+    for i in range(2, LEN_LIMIT+1):
+        for k in range(i):
+            j = k
+            s = ""
+
+            while j < cipher_len:
+                s += cipher[j]
+                j += i
+
+            strings.append(s)
+
+        avg_index = sum([indice_coincidence(freq(x)) for x in strings]) / len(strings)
+
+        if avg_index > 0.06:
+            return i
+
+        strings = []
+
     return 0
     
 # Renvoie le tableau des décalages probables étant
