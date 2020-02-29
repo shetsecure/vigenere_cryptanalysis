@@ -277,9 +277,19 @@ def cryptanalyse_v1(cipher):
 # Indice de coincidence mutuelle avec décalage
 def indice_coincidence_mutuelle(h1,h2,d):
     """
-    Documentation à écrire
+        Implementation directe de la formule.
     """
-    return 0.0
+    s = 0
+
+    for i in range(len(h1)):
+        s += (h1[i] * h2[(i+d)%26])
+    
+    total1 = sum([i for i in h1])
+    total2 = sum([i for i in h2])
+
+    s /= (total1 * total2)
+
+    return s
 
 # Renvoie le tableau des décalages probables étant
 # donné la longueur de la clé
@@ -290,6 +300,39 @@ def tableau_decalages_ICM(cipher, key_length):
     Documentation à écrire
     """
     decalages=[0]*key_length
+
+    # constructing columns
+    columns = []
+    cipher_len = len(cipher)
+
+    for k in range(key_length):
+        j = k
+        s = ""
+
+        while j < cipher_len:
+            s += cipher[j]
+            j += key_length
+
+        columns.append(s)
+
+    # done constructing columns
+    
+    # calculating decalage of each col
+    column_0 = ''.join(columns[0])
+
+    for i in range(1, key_length):
+        icm_max = indice_coincidence_mutuelle(freq(column_0), freq(''.join(columns[i])), 0)
+        d_max = 0
+
+        for d in range(1, 26):
+            icm_max_d = indice_coincidence_mutuelle(freq(column_0), freq(''.join(columns[i])), d)
+
+            if icm_max < icm_max_d:
+                icm_max = icm_max_d
+                d_max = d
+
+        decalages[i] = d_max
+
     return decalages
 
 # Cryptanalyse V2 avec décalages par ICM
