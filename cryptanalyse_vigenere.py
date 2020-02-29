@@ -1,7 +1,6 @@
 # Sorbonne Université 3I024 2018-2019
 # TME 2 : Cryptanalyse du chiffre de Vigenere
 #
-# Etudiant.e 2 : NOM ET NUMERO D'ETUDIANT
 
 import sys, getopt, string, math
 from frequence import hist_from_file
@@ -10,8 +9,6 @@ from frequence import hist_from_file
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 # Fréquence moyenne des lettres en français
-# À modifier
-# freq_FR = [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 freq_FR = [0.09213437454330574, 0.010354490059155806, 0.030178992381545422, 0.037536932666586184, 0.17174754258773295, 0.010939058717380115, 0.0106150043524949, 0.010717939268399616, 0.07507259453174145, 0.0038327371156619923, 6.989407870073262e-05, 0.06136827190067416, 0.026498751437594118, 0.07030835996721332, 0.04914062053233872, 0.023697905083841123, 0.010160057440224678, 0.06609311162084369, 0.07816826681746844, 0.0737433362349966, 0.06356167517044624, 0.016450524523290613, 1.1437212878301701e-05, 0.004071647784675406, 0.0023001505899695645, 0.0012263233808401269]
 
 def calculate_freq_FR():
@@ -200,6 +197,7 @@ def clef_par_decalages(cipher, key_length):
         calculate the shift size of each column between E (the most freq char in french) and most_freq_char in that column
         return the list of decalage
     """
+    assert(isinstance(key_length, int) and key_length > 0)
     decalages=[0]*key_length
     columns = []
     cipher_len = len(cipher)
@@ -299,6 +297,7 @@ def tableau_decalages_ICM(cipher, key_length):
     """
         2 parts relevent here: first we construct columns of the cipher, then we calculate each shift as told in the instructions.
     """
+    assert(isinstance(key_length, int) and key_length > 0)
     decalages=[0]*key_length
 
     # constructing columns
@@ -389,7 +388,7 @@ def cryptanalyse_v2(cipher):
 # calcule la correlation lineaire de Pearson
 def correlation(L1,L2):
     """
-    Documentation à écrire
+        Implementation directe de la formule
     """
     length = len(L1)
 
@@ -399,7 +398,7 @@ def correlation(L1,L2):
     corr = sum([(i - avg1) * (j - avg2) for i,j in zip(L1, L2)])
     corr /= ( ( (sum([ (i - avg1)**2 for i in L1 ])) ** 0.5 ) * ( (sum([ (i - avg2)**2 for i in L2 ]))**0.5  ))
     
-    if corr > 0.999999999999999: # pour passer le premier test du correlation 
+    if corr > 0.999999999999999: # c'est a cause du precision arithmetique lors de la conversation a la base binaire.
         corr = 1
 
     return corr
@@ -408,8 +407,10 @@ def correlation(L1,L2):
 # étant donné une longueur de clé fixée
 def clef_correlations(cipher, key_length):
     """
-    Documentation à écrire
+        calcule pour chaque colonne le décalage qui maximise la corrélation avec un texte français.
     """
+    assert(isinstance(key_length, int) and key_length > 0)
+
     key=[0]*key_length
 
     # constructing columns
@@ -454,7 +455,10 @@ def clef_correlations(cipher, key_length):
 # Cryptanalyse V3 avec correlations
 def cryptanalyse_v3(cipher):
     """
-    Documentation à écrire
+         La bonne taille de clef est celle qui maximise la moyenne de corrélations sur les colonnes.
+         94 texts successfully unciphered with this method.
+         Peut-etre que les textes qui échouent sont chiffres avec une cle d'une longueur plus de 20 voire 26.
+
     """
 
     KEY_LEN_LIMIT = 20
@@ -468,9 +472,8 @@ def cryptanalyse_v3(cipher):
             score_max = score
             key_max = key
 
-
-    return dechiffre_vigenere(cipher, key_max)
-
+    plain = dechiffre_vigenere(cipher, key_max)
+    return plain
 
 ################################################################
 # NE PAS MODIFIER LES FONCTIONS SUIVANTES
