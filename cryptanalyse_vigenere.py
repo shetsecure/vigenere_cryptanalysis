@@ -456,7 +456,20 @@ def cryptanalyse_v3(cipher):
     """
     Documentation à écrire
     """
-    return "TODO"
+
+    KEY_LEN_LIMIT = 20
+
+    score_max, key_max = clef_correlations(cipher, 1)
+
+    for i in range(2, KEY_LEN_LIMIT):
+        score, key = clef_correlations(cipher, i)
+
+        if score_max < score:
+            score_max = score
+            key_max = key
+
+
+    return dechiffre_vigenere(cipher, key_max)
 
 
 ################################################################
