@@ -297,7 +297,7 @@ def indice_coincidence_mutuelle(h1,h2,d):
 # à la première colonne
 def tableau_decalages_ICM(cipher, key_length):
     """
-    Documentation à écrire
+        2 parts relevent here: first we construct columns of the cipher, then we calculate each shift as told in the instructions.
     """
     decalages=[0]*key_length
 
@@ -338,9 +338,45 @@ def tableau_decalages_ICM(cipher, key_length):
 # Cryptanalyse V2 avec décalages par ICM
 def cryptanalyse_v2(cipher):
     """
-    Documentation à écrire
+        43 texts successfully unciphered.
     """
-    return "TODO"
+    guessed_key_length = longueur_clef(cipher)
+    decalages = tableau_decalages_ICM(cipher, guessed_key_length)
+    cipher_len = len(cipher)
+    columns = []
+        
+    # constructing columns
+    for k in range(guessed_key_length):
+        j = k
+        s = ""
+
+        while j < cipher_len:
+            s += cipher[j]
+            j += guessed_key_length
+
+        columns.append(s)
+
+    # decalage de chaque colonne pour l’aligner avec la première colonne
+    
+    for i in range(1, len(columns)):
+        columns[i] = dechiffre_cesar(columns[i], decalages[i])
+
+    # regrouping columns to one text
+    txt = ""
+
+    for i in range(len(columns[0])): 
+        for j in range(guessed_key_length):
+            try:
+                txt += alphabet[ alphabet.index(columns[j][i]) ]
+            except IndexError:
+                pass
+
+    most_freq_char_index = lettre_freq_max(txt) # this is the equivalent of E
+    cesar_key = (most_freq_char_index - alphabet.index('E')) % 26
+
+    plain_text = dechiffre_cesar(txt, cesar_key)
+
+    return plain_text
 
 
 ################################################################
