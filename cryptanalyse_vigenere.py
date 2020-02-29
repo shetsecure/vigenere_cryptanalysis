@@ -391,7 +391,18 @@ def correlation(L1,L2):
     """
     Documentation à écrire
     """
-    return 0.0
+    length = len(L1)
+
+    avg1 = sum(L1) / length
+    avg2 = sum(L2) / length
+
+    corr = sum([(i - avg1) * (j - avg2) for i,j in zip(L1, L2)])
+    corr /= ( ( (sum([ (i - avg1)**2 for i in L1 ])) ** 0.5 ) * ( (sum([ (i - avg2)**2 for i in L2 ]))**0.5  ))
+    
+    if corr > 0.999999999999999: # pour passer le premier test du correlation 
+        corr = 1
+
+    return corr
 
 # Renvoie la meilleur clé possible par correlation
 # étant donné une longueur de clé fixée
@@ -400,7 +411,44 @@ def clef_correlations(cipher, key_length):
     Documentation à écrire
     """
     key=[0]*key_length
-    score = 0.0
+
+    # constructing columns
+    columns = []
+    cipher_len = len(cipher)
+
+    for k in range(key_length):
+        j = k
+        s = ""
+
+        while j < cipher_len:
+            s += cipher[j]
+            j += key_length
+
+        columns.append(s)
+
+    # done constructing columns
+    
+    # calculating decalage of each col
+    s_corr_max = 0
+
+    for i in range(key_length):
+        
+        freq_col_i = freq(''.join(columns[i]))
+        corr_max = correlation(freq_FR, freq_col_i)
+        d_max = 0
+
+        for d in range(1, 26):
+            freq_col_i.insert(0, freq_col_i.pop()) # right shift for the list <=> decalage par 1 
+            corr_max_d = correlation(freq_FR, freq_col_i)
+
+            if corr_max < corr_max_d:
+                corr_max = corr_max_d
+                d_max = d
+
+        key[i] = 0 if (d_max == 0) else 26-d_max
+        s_corr_max += corr_max
+    
+    score = s_corr_max / key_length
     return (score, key)
 
 # Cryptanalyse V3 avec correlations
