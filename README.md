@@ -1,6 +1,6 @@
-# TME : Cryptanalyse du chiffre de Vigenère
+# TME : Vigenère Cryptanalysis
 
-- L'[énoncé du TME](https://moodle-sciences.upmc.fr/moodle-2019/pluginfile.php/157066/mod_label/intro/TME_Vigenere.pdf) se trouve sur Moodle.
-- Le fichier à modifier est `cryptanalyse_vigenere.py`.
-- Le dossier `data` contient 100 textes chiffrés avec Vigenère. Pour chaque texte, on donne le texte clair `.plain`, le texte chiffré `.cipher` et la clé `.key`. Cela peut vous être utile pour tester votre code.
-- Des tests automatiques sont à votre disposition. Vous pouvez lancer la commande `./test-all.sh` pour les executer, ou bien les executer séparément avec `python test-N-*.py` où N est le numéro du test que vous souhaitez effectuer. Ces tests sont automatiquement lancés lorsque vous effectuez un `push` sur GitLab, mais nous vous conseillons de les lancer d'abord localement et de ne soumettre votre travail que si les tests fonctionnent.
+- Methods to crack Vigenere cipher.
+- L'[énoncé du TME](TME_Vigenere.pdf)
+- `cryptanalyse_vigenere.py` is where all the important functions are located.
+- `data` folder has 100 encrypted texts with Vigenère. For each text, you'll find the original plaintext `.plain`, encrypted text `.cipher` and the key `.key`.
